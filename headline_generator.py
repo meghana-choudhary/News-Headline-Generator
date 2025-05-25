@@ -17,6 +17,7 @@ def generate_headlines(
     headline_type: Optional[str] = None,
     audience_type: Optional[str] = None,
     num_variants: int = 3,
+    extra_reqd: Optional[str] = None,
 ) -> str:
     tone_part = f" in a {tone} tone" if tone else ""
     platform_part = f" suitable for {platform}" if platform else ""
@@ -24,21 +25,24 @@ def generate_headlines(
     keyword_part = f" Try to include the following keywords: {', '.join(keywords)}." if keywords else ""
     headline_type_part = f" The headline style should be {headline_type}." if headline_type else ""
     audience_type_part = f" Tailor the headlines for {audience_type}." if audience_type else ""
+    extra_reqd_part = f" While generating headlines also keep in mind these additional requirement(s): {extra_reqd}" if extra_reqd else ""
+
 
     prompt_template = PromptTemplate(
         input_variables=[
             "article", "num_variants", "tone_part", "platform_part",
-            "length_part", "keyword_part", "headline_type_part", "audience_type_part"
+            "length_part", "keyword_part", "headline_type_part", "audience_type_part", "extra_reqd_part"
         ],
         template="""
 You are a professional headline writer for digital media platforms.
 
 Your task is to write {num_variants} compelling, concise, and relevant headlines{tone_part}{platform_part}.
-The headlines should accurately summarize the article without exaggeration or hallucination.
+The headlines should accurately summarize the article without exaggeration or hallucination. 
 {length_part}
 {keyword_part}
 {headline_type_part}
 {audience_type_part}
+{extra_reqd_part}
 
 Article:
 \"\"\" 
@@ -66,6 +70,7 @@ Output format:
         keyword_part=keyword_part,
         headline_type_part=headline_type_part,
         audience_type_part=audience_type_part,
+        extra_reqd_part=extra_reqd_part
     )
 
     return response.strip()

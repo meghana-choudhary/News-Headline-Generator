@@ -18,6 +18,7 @@ if st.session_state.reset:
     st.session_state.audience_type = ""
     st.session_state.num_variants = 3
     st.session_state.keywords = ""
+    st.session_state.extra_reqd = ""
     st.session_state.reset = False
     st.rerun()
 
@@ -27,7 +28,7 @@ left_col, right_col = st.columns([1.5, 1])
 
 with left_col:
     st.markdown("### ✍️ Paste Your Article")
-    article = st.text_area("Article Content", height=260, label_visibility="collapsed", key="article")
+    article = st.text_area("Article Content", height=350, label_visibility="collapsed", key="article")
 
 with right_col:
     st.markdown("### 🎨 Customization Options")
@@ -52,6 +53,7 @@ with right_col:
 
 
     keywords_input = st.text_input("Keywords (comma-separated):", key="keywords")
+    extra_reqd= st.text_input("Enter additional requirements (if any):", key="extra_reqd")
 
 button_col1, button_col2, button_col3, button_col4, button_col5 = st.columns([1, 1, 1, 1, 1])
 with button_col2:
@@ -70,6 +72,9 @@ if generate:
     else:
         keywords = [kw.strip() for kw in keywords_input.split(",") if kw.strip()] if keywords_input else None
 
+        extra_reqd_clean = extra_reqd.strip() if extra_reqd else None
+
+
         with st.spinner("Generating headlines..."):
             try:
                 headlines = generate_headlines(
@@ -81,6 +86,7 @@ if generate:
                     headline_type=headline_type or None,
                     audience_type=audience_type or None,
                     num_variants=num_variants,
+                    extra_reqd=extra_reqd
                 )
                 st.markdown("### 📢 Generated Headlines")
                 st.code(headlines)
